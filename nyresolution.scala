@@ -1,6 +1,7 @@
 
 import scala.collection.mutable.ArrayBuffer
 import java.io.PrintWriter
+import scala.collection.mutable.ArraySeq
 
 def main(args: Array[String]): Unit = {
 	tests()
@@ -14,7 +15,7 @@ def solveInput( fileName : String ) = {
 	val output = new PrintWriter( "nyresolution_output.txt" )
 	var caseNum = 1
 	var taskCount = Integer.parseInt( lines(0) )
-	var tasks = new ArrayBuffer[( Nutrients, List[Nutrients] )]
+	var tasks = new ArrayBuffer[( Nutrients, Seq[Nutrients] )]
 	var currentLine = 1
 	while( taskCount > 0 ){
 		val goalParams = lines( currentLine ).split(" ").map( Integer.parseInt ).toList
@@ -30,7 +31,7 @@ def solveInput( fileName : String ) = {
 			foodCount += -1
 			currentLine += 1
 		}
-		val foodList = foods.toList
+		val foodList : Seq[Nutrients] = ArraySeq( foods : _* )
 		val elem =  ( goal, foodList )
 		tasks += elem
 		taskCount -= 1;
@@ -40,9 +41,10 @@ def solveInput( fileName : String ) = {
 	tasks.foreach( task => {
 		val ( goal, foods ) = task
 		val can = canEatToday( goal, foods )
-		val result = "Case $caseCount: " + ( if ( can ) "yes" else "no" )
+		val result = s"Case $caseCount: " + ( if ( can ) "yes" else "no" )
 		println( result )
 		output.println( result )
+		caseCount += 1
 	})
 	output.close()
 }
@@ -101,11 +103,11 @@ def assert( b : Boolean ) : Unit = {
 	}
 }
 
-def canEatToday( goal : Nutrients, foods : List[Nutrients] ) : Boolean = {
+def canEatToday( goal : Nutrients, foods : Seq[Nutrients] ) : Boolean = {
 	canEatMore( goal, Nutrients( 0, 0, 0 ), foods )
 }
 
-def canEatMore( goal: Nutrients, current : Nutrients,  availableFoods : List[Nutrients] ) : Boolean = {
+def canEatMore( goal: Nutrients, current : Nutrients,  availableFoods : Seq[Nutrients] ) : Boolean = {
 	if ( goal == current ){
 		return true;
 	}
@@ -121,6 +123,8 @@ def canEatMore( goal: Nutrients, current : Nutrients,  availableFoods : List[Nut
 	})
 	edibleFoods.contains( true )	
 }
+
+
 
 case class Nutrients( protein : Int, carbohydrates : Int, fat : Int ){
 	
