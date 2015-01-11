@@ -63,7 +63,16 @@ def tests2() : Unit = {
 	assert( lotsDigits.swapToMax == "9342212341" )
 
 	val n = Num( "912439" )
-	//assert( n.swapToMax == "992431" )
+	assert( n.swapToMax == "992431" )
+
+	val n2 = Num( "999999991" )
+	assert( n2.swapToMax == "999999991" )
+
+	val n3 = Num( "999999919" )
+	assert( n3.swapToMax == "999999991" )
+
+	val n4 = Num( "939919999" )
+	assert( n4.swapToMax == "999919993" )
 }
 
 def exampleTests() : Unit = {
@@ -126,25 +135,28 @@ case class Num( n : String ){
 		  *
 		  */
 		val swapToMax : String = {
-			val maxElem = this.max
-			val lastMaxElem = this.lastIndexOf( maxElem )
-			val f = this.firstElem
-			val parts = ArrayBuffer( toList : _* )
-			parts(0) = maxElem
-			parts( lastMaxElem ) = f
-			parts.mkString
+			swawpMax
 		}
 
 		// 912439
 		// 999991
-		val swawpMax : String = {
+		def swawpMax : String = {
 			var orderedParts = descending
 			var currentIndex = 0
-			while( true ) {
+			while( currentIndex < this.toList.length ) {
 				if ( toList(currentIndex) == orderedParts(0) ){
 					orderedParts = orderedParts.drop( 1 )
+					currentIndex += 1
+				} else {
+					val parts = ArrayBuffer( toList : _* )
+					val swappedElem = parts( currentIndex )
+					parts(currentIndex) = orderedParts( 0 )
+					val swappedToLastIndex = this.lastIndexOf( orderedParts( 0 ) )
+					parts( swappedToLastIndex ) = swappedElem
+					return parts.mkString
 				}
 			}
+			return n;
 		}
 }
 
