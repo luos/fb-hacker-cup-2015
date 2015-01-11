@@ -112,16 +112,32 @@ def canEatMore( goal: Nutrients, current : Nutrients,  availableFoods : Seq[Nutr
 		return true;
 	}
 	
-	val edibleFoods = availableFoods.map( food => {
+	import Breaks.{break, breakable}
+
+	for( val food <- edibleFoods ) {
+		val ifEaten = current.add( food )
+		if ( ifEaten.isLessThan( goal ) ){
+			val availableF = availableFoods.filter( f => !(f.eq(food)) )
+			val result = canEatMore( goal, ifEaten, availableF )
+			if ( result ) {
+				return true;
+			}
+		}else{
+			return ifEaten == goal
+		}
+	}
+
+	/* val edibleFoods = availableFoods.map( food => {
 		val ifEaten = current.add( food )
 		if ( ifEaten.isLessThan( goal ) ){
 			val availableF = availableFoods.filter( f => !(f.eq(food)) )
 			canEatMore( goal, ifEaten, availableF )
 		}else{
 			ifEaten == goal
-		}
+		}	
 	})
 	edibleFoods.contains( true )	
+	*/
 }
 
 
